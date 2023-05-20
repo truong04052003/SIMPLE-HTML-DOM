@@ -60,47 +60,44 @@ $html = file_get_html($url);
 
 //thay đổi nội dung của một trang trước khi xuất dữ liệu ra
 // $html->find('body', 0)->outertext = '';
+// echo $html;
 
 //===========================================================================================================
 
 
-//Lấy nội dung từ class  
-// $noidung = $html->find('li.jsx-934348644');
-// echo $noidung;
+// //Lấy nội dung từ class  
+$noidung = $html->find('li.jsx-934348644');
+// // echo $noidung;
 
+// // Lặp qua từng bài viết và lấy thông tin
 
+$posts = [];
+foreach ($noidung as $post) {
+  $title = $post->find('.thread-title', 0) ? $post->find('.thread-title', 0)->innertext : '';
+  $content = $post->find('.excerpt', 0) ? $post->find('.excerpt', 0)->innertext : '';
+  $author = $post->find('.author', 0) ? $post->find('.author', 0)->innertext : '';
 
+  if($title == ''){
+    continue;
+  }
 
-// Lặp qua từng bài viết và lấy thông tin
+  $posts[] = [
+    'title' => $title,
+    'content' => $content,
+    'author' => $author,
+  ];
 
-// $posts = [];
-// foreach ($noidung as $post) {
-//   $title = $post->find('.thread-title', 0) ? $post->find('.thread-title', 0)->innertext : '';
-//   $content = $post->find('.excerpt', 0) ? $post->find('.excerpt', 0)->innertext : '';
-//   $author = $post->find('.author', 0) ? $post->find('.author', 0)->innertext : '';
-
-//   if($title == ''){
-//     continue;
-//   }
-
-//   $posts[] = [
-//     'title' => $title,
-//     'content' => $content,
-//     'author' => $author,
-//   ];
-
-// }
-// foreach ($posts as $post) {
-//   $title = $post['title'];
-//   $content = $post['content'];
-//   $author = $post['author'];
-//   // Thực hiện câu truy vấn INSERT để lưu thông tin vào cơ sở dữ liệu
-//   $sql = "INSERT INTO posts ( title, content ,author) VALUES ('$title', '$content', '$author')";
-
-//   try {
-//     $conn->query($sql);
-//   } catch (Exception $e) {
-//     echo $e->getMessage();
-//   }
-// }
+}
+foreach ($posts as $post) {
+  $title = $post['title'];
+  $content = $post['content'];
+  $author = $post['author'];
+  // Thực hiện câu truy vấn INSERT để lưu thông tin vào cơ sở dữ liệu
+  $sql = "INSERT INTO posts ( title, content ,author) VALUES ('$title', '$content', '$author')";
+  try {
+    $conn->query($sql);
+  } catch (Exception $e) {
+    echo $e->getMessage();
+  }
+}
 ?>
